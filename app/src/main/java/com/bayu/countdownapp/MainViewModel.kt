@@ -17,7 +17,6 @@ data class MainUiState(
 class MainViewModel : ViewModel() {
 
     companion object {
-        private const val START_TIME_IN_MILLIS = 60_000L
         private const val ONE_SECOND_IN_MILLIS = 1_000L
     }
 
@@ -25,12 +24,22 @@ class MainViewModel : ViewModel() {
 
     private val _leftTimeInMillis = MutableStateFlow(
         MainUiState(
-            START_TIME_IN_MILLIS,
+            leftTimeInMillis = 0L,
             isTimerRunning = false,
             isTimerFinished = false
         )
     )
     val leftTimeInMillis: StateFlow<MainUiState> = _leftTimeInMillis
+
+    fun setTimer(timeInMills: Long) {
+        countDownTimer?.cancel()
+        _leftTimeInMillis.update {
+            _leftTimeInMillis.value.copy(
+                leftTimeInMillis = timeInMills,
+                isTimerRunning = false
+            )
+        }
+    }
 
     fun startTimer() {
         viewModelScope.launch {
@@ -67,7 +76,7 @@ class MainViewModel : ViewModel() {
     fun resetTimer() {
         _leftTimeInMillis.update {
             _leftTimeInMillis.value.copy(
-                leftTimeInMillis = START_TIME_IN_MILLIS,
+                leftTimeInMillis = 0L,
                 isTimerRunning = false,
                 isTimerFinished = false,
             )

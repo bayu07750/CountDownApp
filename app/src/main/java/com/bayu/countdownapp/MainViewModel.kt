@@ -33,12 +33,7 @@ class MainViewModel : ViewModel() {
 
     fun setTimer(timeInMills: Long) {
         countDownTimer?.cancel()
-        _leftTimeInMillis.update {
-            _leftTimeInMillis.value.copy(
-                leftTimeInMillis = timeInMills,
-                isTimerRunning = false
-            )
-        }
+        _leftTimeInMillis.update { it.copy(leftTimeInMillis = timeInMills, isTimerRunning = false) }
     }
 
     fun startTimer() {
@@ -48,7 +43,7 @@ class MainViewModel : ViewModel() {
                     CountDownTimer(_leftTimeInMillis.value.leftTimeInMillis, ONE_SECOND_IN_MILLIS) {
                     override fun onTick(millisUntilFinished: Long) {
                         _leftTimeInMillis.update {
-                            _leftTimeInMillis.value.copy(
+                            it.copy(
                                 leftTimeInMillis = millisUntilFinished,
                                 isTimerRunning = true
                             )
@@ -57,7 +52,7 @@ class MainViewModel : ViewModel() {
 
                     override fun onFinish() {
                         _leftTimeInMillis.update {
-                            _leftTimeInMillis.value.copy(
+                            it.copy(
                                 isTimerRunning = false,
                                 isTimerFinished = true
                             )
@@ -70,16 +65,12 @@ class MainViewModel : ViewModel() {
 
     fun pauseTimer() {
         countDownTimer?.cancel()
-        _leftTimeInMillis.update { _leftTimeInMillis.value.copy(isTimerRunning = false) }
+        _leftTimeInMillis.update { it.copy(isTimerRunning = false) }
     }
 
     fun resetTimer() {
         _leftTimeInMillis.update {
-            _leftTimeInMillis.value.copy(
-                leftTimeInMillis = 0L,
-                isTimerRunning = false,
-                isTimerFinished = false,
-            )
+            it.copy(leftTimeInMillis = 0L, isTimerRunning = false, isTimerFinished = false)
         }
     }
 }

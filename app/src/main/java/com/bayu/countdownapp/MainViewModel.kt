@@ -22,27 +22,27 @@ class MainViewModel : ViewModel() {
 
     private var countDownTimer: CountDownTimer? = null
 
-    private val _leftTimeInMillis = MutableStateFlow(
+    private val _mainUiState = MutableStateFlow(
         MainUiState(
             leftTimeInMillis = 0L,
             isTimerRunning = false,
             isTimerFinished = false
         )
     )
-    val leftTimeInMillis: StateFlow<MainUiState> = _leftTimeInMillis
+    val mainUiState: StateFlow<MainUiState> = _mainUiState
 
     fun setTimer(timeInMills: Long) {
         countDownTimer?.cancel()
-        _leftTimeInMillis.update { it.copy(leftTimeInMillis = timeInMills, isTimerRunning = false) }
+        _mainUiState.update { it.copy(leftTimeInMillis = timeInMills, isTimerRunning = false) }
     }
 
     fun startTimer() {
         viewModelScope.launch {
             countDownTimer =
                 object :
-                    CountDownTimer(_leftTimeInMillis.value.leftTimeInMillis, ONE_SECOND_IN_MILLIS) {
+                    CountDownTimer(_mainUiState.value.leftTimeInMillis, ONE_SECOND_IN_MILLIS) {
                     override fun onTick(millisUntilFinished: Long) {
-                        _leftTimeInMillis.update {
+                        _mainUiState.update {
                             it.copy(
                                 leftTimeInMillis = millisUntilFinished,
                                 isTimerRunning = true
@@ -51,7 +51,7 @@ class MainViewModel : ViewModel() {
                     }
 
                     override fun onFinish() {
-                        _leftTimeInMillis.update {
+                        _mainUiState.update {
                             it.copy(
                                 isTimerRunning = false,
                                 isTimerFinished = true
@@ -65,11 +65,11 @@ class MainViewModel : ViewModel() {
 
     fun pauseTimer() {
         countDownTimer?.cancel()
-        _leftTimeInMillis.update { it.copy(isTimerRunning = false) }
+        _mainUiState.update { it.copy(isTimerRunning = false) }
     }
 
     fun resetTimer() {
-        _leftTimeInMillis.update {
+        _mainUiState.update {
             it.copy(leftTimeInMillis = 0L, isTimerRunning = false, isTimerFinished = false)
         }
     }

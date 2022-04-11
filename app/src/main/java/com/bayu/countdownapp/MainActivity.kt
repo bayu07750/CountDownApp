@@ -1,7 +1,6 @@
 package com.bayu.countdownapp
 
 import android.os.Bundle
-import android.util.Log
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
@@ -13,7 +12,6 @@ import com.google.android.material.timepicker.MaterialTimePicker
 import com.google.android.material.timepicker.TimeFormat
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
-import java.text.SimpleDateFormat
 import java.util.*
 
 class MainActivity : AppCompatActivity() {
@@ -52,7 +50,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun observe() {
         lifecycleScope.launch {
-            viewModel.leftTimeInMillis
+            viewModel.mainUiState
                 .flowWithLifecycle(lifecycle, Lifecycle.State.STARTED)
                 .collectLatest { state ->
                     val (leftTimeInMillis, isTimerRunning, isTimerFinished) = state
